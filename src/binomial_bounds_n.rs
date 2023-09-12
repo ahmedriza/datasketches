@@ -1,3 +1,10 @@
+///
+/// Enables the estimation of error bounds given a sample set size, the sampling
+/// probability theta, the number of standard deviations and a simple no_data_seen flag.  This can
+/// be used to estimate error bounds for fixed threshold sampling as well as the error bounds
+/// calculations for sketches.
+///
+/// See [datasketches-java](https://github.com/apache/datasketches-java)
 #[derive(Default)]
 pub struct BinomialBoundsN {
     pub delta_of_num_sdev: Vec<f64>,
@@ -13,5 +20,15 @@ impl BinomialBoundsN {
             0.0013498126861731796, // = 0.5 (1 + erf((-3/sqrt(2))))
         ];
         BinomialBoundsN { delta_of_num_sdev }
+    }
+
+    // our "classic" bounds, but now with continuity correction
+    #[allow(unused)]
+    fn cont_classic_lb(num_samples_f: f64, theta: f64, num_sdev: f64) -> f64 {
+        let n_hat = (num_samples_f - 0.5) / theta;
+        let b = num_sdev * ((1.0 - theta) / theta).sqrt();
+        let d = 0.5 * b * ((b * b) + (4.0 * n_hat)).sqrt();
+        let centre = n_hat * (0.5 * (b * b));
+        centre - d
     }
 }
