@@ -4,7 +4,11 @@
 /// be used to estimate error bounds for fixed threshold sampling as well as the error bounds
 /// calculations for sketches.
 ///
-/// See [datasketches-java](https://github.com/apache/datasketches-java)
+/// See:
+/// 
+/// * [datasketches-java](https://github.com/apache/datasketches-java)
+/// * [datasketches-cpp](https://github.com/apache/datasketches-cpp)
+///
 #[derive(Default)]
 pub struct BinomialBoundsN {
     pub delta_of_num_sdev: Vec<f64>,
