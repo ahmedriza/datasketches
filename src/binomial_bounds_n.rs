@@ -5,7 +5,7 @@
 /// calculations for sketches.
 ///
 /// See:
-/// 
+///
 /// * [datasketches-java](https://github.com/apache/datasketches-java)
 /// * [datasketches-cpp](https://github.com/apache/datasketches-cpp)
 ///
@@ -26,13 +26,23 @@ impl BinomialBoundsN {
         BinomialBoundsN { delta_of_num_sdev }
     }
 
-    // our "classic" bounds, but now with continuity correction
+    // our "classic" lower bound, but now with continuity correction
     #[allow(unused)]
     fn cont_classic_lb(num_samples_f: f64, theta: f64, num_sdev: f64) -> f64 {
         let n_hat = (num_samples_f - 0.5) / theta;
         let b = num_sdev * ((1.0 - theta) / theta).sqrt();
         let d = 0.5 * b * ((b * b) + (4.0 * n_hat)).sqrt();
-        let centre = n_hat * (0.5 * (b * b));
+        let centre = n_hat + (0.5 * (b * b));
         centre - d
+    }
+
+    #[allow(unused)]
+    // our "classic" upper bound, but now with continuity correction
+    fn cont_classic_ub(num_samples_f: f64, theta: f64, num_sdev: f64) -> f64 {
+        let n_hat = (num_samples_f + 0.5) / theta;
+        let b = num_sdev * ((1.0 - theta) / theta).sqrt();
+        let d = 0.5 * b * ((b * b) + (4.0 * n_hat)).sqrt();
+        let centre = n_hat + (0.5 * (b * b));
+        centre + d
     }
 }
