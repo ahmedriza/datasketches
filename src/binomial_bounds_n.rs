@@ -28,7 +28,7 @@ impl BinomialBoundsN {
 
     // our "classic" lower bound, but now with continuity correction
     #[allow(unused)]
-    fn cont_classic_lb(num_samples_f: f64, theta: f64, num_sdev: f64) -> f64 {
+    fn cont_classic_lb(&self, num_samples_f: f64, theta: f64, num_sdev: f64) -> f64 {
         let n_hat = (num_samples_f - 0.5) / theta;
         let b = num_sdev * ((1.0 - theta) / theta).sqrt();
         let d = 0.5 * b * ((b * b) + (4.0 * n_hat)).sqrt();
@@ -38,11 +38,31 @@ impl BinomialBoundsN {
 
     #[allow(unused)]
     // our "classic" upper bound, but now with continuity correction
-    fn cont_classic_ub(num_samples_f: f64, theta: f64, num_sdev: f64) -> f64 {
+    fn cont_classic_ub(&self, num_samples_f: f64, theta: f64, num_sdev: f64) -> f64 {
         let n_hat = (num_samples_f + 0.5) / theta;
         let b = num_sdev * ((1.0 - theta) / theta).sqrt();
         let d = 0.5 * b * ((b * b) + (4.0 * n_hat)).sqrt();
         let centre = n_hat + (0.5 * (b * b));
         centre + d
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
+
+#[cfg(test)]
+mod test {
+    use super::BinomialBoundsN;
+
+    #[allow(unused)]
+    #[test]
+    fn test_cont_classic_lb() {
+        let bounds = BinomialBoundsN::new();
+        let num_samples_f = 500.0;
+        let theta = 0.001;
+        let num_sdev = 2.0;
+
+        let lb = bounds.cont_classic_lb(num_samples_f, theta, num_sdev);
+        let ub = bounds.cont_classic_ub(num_samples_f, theta, num_sdev);
+        println!("bounds: [{},{}]", lb, ub);
     }
 }
